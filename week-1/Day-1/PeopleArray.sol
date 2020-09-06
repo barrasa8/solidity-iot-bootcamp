@@ -10,9 +10,10 @@ contract HelloWorld{
       bool senior;
     }
 
-    //mapping (address => Person) private people;
     Person[] private people;
-    mapping (address=>uint) private peopleBalance;
+    mapping (address=>uint) private userPeopleBalance;
+    mapping (address=> uint[] ) private peoplePerUser;
+    
 
     function createPerson(string memory name, uint age, uint height) public {
         //This creates a person
@@ -22,7 +23,7 @@ contract HelloWorld{
         newPerson.age = age;
         newPerson.height = height;
 
-        if(age >= 65){
+       if(age >= 65){
            newPerson.senior = true;
        }
        else{
@@ -31,14 +32,27 @@ contract HelloWorld{
 
         insertPerson(newPerson);
     }
+    
     function insertPerson(Person memory newPerson) private {
-        //address creator = msg.sender;
-        //people[creator] = newPerson;
         people.push(newPerson);
-        peopleBalance[msg.sender]=peopleBalance[msg.sender]+1;
+        userPeopleBalance[msg.sender]=userPeopleBalance[msg.sender]+1;
+        
+        //below we add a new ID to the people array for the user
+        peoplePerUser[msg.sender].push(peoplePerUser[msg.sender].length);  
+        
     }
+    
     function getPerson(uint index) public view returns(address addr, string memory name, uint age, uint height, bool senior,uint numberOfPeople){
-        //address creator = msg.sender;
-        return (people[index].addr,people[index].name, people[index].age, people[index].height, people[index].senior, peopleBalance[people[index].addr]);
+        return (people[index].addr,people[index].name, people[index].age, people[index].height, people[index].senior, userPeopleBalance[people[index].addr]);
     }
+    
+    //Create a function that returns an array of all the ID's that the msg.sender has created.
+    function getUserPeopleBalance () public view returns (uint numberOfPeople){
+        return userPeopleBalance[msg.sender];
+    }
+    
+    function getPeopleIdPerUser () public view returns (uint[] memory peopleIdsPerUser){
+        return peoplePerUser[msg.sender];
+    }
+
 }
