@@ -11,3 +11,4 @@ contract Ownable{
     constructor() public{
         owner = msg.sender;
     }
+}
