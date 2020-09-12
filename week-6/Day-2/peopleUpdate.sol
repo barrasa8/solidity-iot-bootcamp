@@ -12,9 +12,11 @@ contract HelloWorld{
 
     mapping (address => Person) private people;
     
+    event PersonCreated(string name, bool senior);
     event PersonUpdated(string oldName, string newName, uint oldAge, uint newAgne, uint oldHeight, uint newHeight,bool oldSenior, bool newSenior );
 
     function createPerson(string memory name, uint age, uint height) public {
+        require(age<120  && height<230);
         //This creates a person
         Person memory newPerson;
         newPerson.name = name;
@@ -29,6 +31,8 @@ contract HelloWorld{
        }
 
         insertPerson(newPerson);
+
+        emit PersonCreated(newPerson.name, newPerson.senior);
     }
     function insertPerson(Person memory newPerson) private {
         address creator = msg.sender;
